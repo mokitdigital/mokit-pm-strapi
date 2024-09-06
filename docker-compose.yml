@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Serviço para o Strapi
+  strapi:
+    build:
+      context: .
+      target: dev  # ou 'cloud' para produção
+    container_name: strapi-app
+    env_file: .env  # Arquivo .env com as variáveis de ambiente
+    ports:
+      - "1337:1337"
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/home/node/src
+      - ./public:/home/node/public
+      - ./config:/home/node/config
+    networks:
+      - strapi-network
+
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:14
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - strapi-network
+
+# Rede compartilhada
+networks:
+  strapi-network:
+    driver: bridge

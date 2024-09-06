@@ -60,4 +60,4 @@ RUN yarn install --immutable --prefer-offline --production
 ENTRYPOINT [ "/home/node/entrypoint.sh" ]
 
 # Run the application (consider running migrations before starting the app)
-CMD [ "yarn", "start" ]
+CMD [ "sh", "-c", "yarn cs:import -y && yarn start" ]

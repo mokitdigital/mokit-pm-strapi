@@ -932,6 +932,40 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
   };
 }
 
+export interface ApiImageImage extends Schema.CollectionType {
+  collectionName: 'images';
+  info: {
+    singularName: 'image';
+    pluralName: 'images';
+    displayName: 'Image';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    url: Attribute.String;
+    product: Attribute.Relation<
+      'api::image.image',
+      'manyToOne',
+      'api::product.product'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::image.image',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::image.image',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiOrderOrder extends Schema.CollectionType {
   collectionName: 'orders';
   info: {
@@ -1028,12 +1062,17 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'oneToMany',
       'api::size.size'
     >;
-    images: Attribute.Media<'images', true>;
     orders: Attribute.Relation<
       'api::product.product',
       'manyToMany',
       'api::order.order'
     >;
+    images: Attribute.Relation<
+      'api::product.product',
+      'oneToMany',
+      'api::image.image'
+    >;
+    discount: Attribute.Float & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1099,6 +1138,7 @@ declare module '@strapi/types' {
       'api::category.category': ApiCategoryCategory;
       'api::color.color': ApiColorColor;
       'api::customer.customer': ApiCustomerCustomer;
+      'api::image.image': ApiImageImage;
       'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
       'api::size.size': ApiSizeSize;

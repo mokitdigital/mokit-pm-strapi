@@ -1073,6 +1073,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'api::image.image'
     >;
     discount: Attribute.Float & Attribute.DefaultTo<0>;
+    rating: Attribute.Decimal;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

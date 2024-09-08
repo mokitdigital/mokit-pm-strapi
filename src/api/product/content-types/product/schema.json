@@ -82,6 +82,9 @@
     "discount": {
       "type": "float",
       "default": 0
+    },
+    "rating": {
+      "type": "decimal"
     }
   }
 }

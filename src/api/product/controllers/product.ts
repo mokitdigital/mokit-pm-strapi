@@ -41,7 +41,7 @@ export default factories.createCoreController(
       }
 
       if (!imageIds) {
-        return ctx.badRequest("Erro ao enviar as imagens para o Imgur");
+        return ctx.badRequest("Erro ao criar imagem");
       }
 
       const product = await strapi.entityService.create(
@@ -101,7 +101,7 @@ export default factories.createCoreController(
       }
 
       if (!imageIds) {
-        return ctx.badRequest("Erro ao enviar as imagens para o Imgur");
+        return ctx.badRequest("Erro ao criar imagem");
       }
 
       const product = await strapi.entityService.update(

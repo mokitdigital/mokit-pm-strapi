@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sellers",
+  "info": {
+    "singularName": "seller",
+    "pluralName": "sellers",
+    "displayName": "Seller",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": false
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "zipCode": {
+      "type": "string"
+    },
+    "registerNumber": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "tradeName": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    }
+  }
+}

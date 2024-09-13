@@ -34,10 +34,6 @@
       "default": "pending",
       "required": true
     },
-    "shippingAddress": {
-      "type": "string",
-      "required": true
-    },
     "paymentMethod": {
       "type": "enumeration",
       "enum": [
@@ -78,6 +74,10 @@
       "relation": "manyToOne",
       "target": "api::customer.customer",
       "inversedBy": "orders"
+    },
+    "shippingAddress": {
+      "type": "json",
+      "required": true
     }
   }
 }

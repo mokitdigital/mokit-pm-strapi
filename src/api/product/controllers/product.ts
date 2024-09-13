@@ -20,6 +20,10 @@ export default factories.createCoreController(
         sizes,
         images,
         discount,
+        height,
+        width,
+        length,
+        weight,
       } = JSON.parse(ctx.request.body);
 
       if (!images) {
@@ -60,6 +64,10 @@ export default factories.createCoreController(
             sizes,
             discount,
             images: imageIds,
+            height,
+            width,
+            length,
+            weight,
           },
         }
       );

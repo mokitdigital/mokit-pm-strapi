@@ -857,6 +857,39 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
 }
 
+export interface ApiCheckoutCheckout extends Schema.CollectionType {
+  collectionName: 'checkouts';
+  info: {
+    singularName: 'checkout';
+    pluralName: 'checkouts';
+    displayName: 'Checkout';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    products: Attribute.Relation<
+      'api::checkout.checkout',
+      'oneToMany',
+      'api::product.product'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::checkout.checkout',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::checkout.checkout',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiColorColor extends Schema.CollectionType {
   collectionName: 'colors';
   info: {
@@ -989,7 +1022,6 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     > &
       Attribute.Required &
       Attribute.DefaultTo<'pending'>;
-    shippingAddress: Attribute.String & Attribute.Required;
     paymentMethod: Attribute.Enumeration<['PIX', 'CREDIT', 'DEBIT', 'BOLETO']> &
       Attribute.Required;
     paymentStatus: Attribute.Enumeration<['approved', 'pending', 'declined']>;
@@ -1003,6 +1035,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
       'manyToOne',
       'api::customer.customer'
     >;
+    shippingAddress: Attribute.JSON & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1074,6 +1107,46 @@ export interface ApiProductProduct extends Schema.CollectionType {
     >;
     discount: Attribute.Float & Attribute.DefaultTo<0>;
     rating: Attribute.Decimal;
+    width: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 15;
+          max: 100;
+        },
+        number
+      >;
+    height: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 100;
+        },
+        number
+      >;
+    length: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 15;
+          max: 100;
+        },
+        number
+      >;
+    weight: Attribute.Decimal &
+      Attribute.SetMinMax<
+        {
+          min: 100;
+          max: 30000;
+        },
+        number
+      >;
+    checkout: Attribute.Relation<
+      'api::product.product',
+      'manyToOne',
+      'api::checkout.checkout'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1084,6 +1157,41 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::product.product',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSellerSeller extends Schema.CollectionType {
+  collectionName: 'sellers';
+  info: {
+    singularName: 'seller';
+    pluralName: 'sellers';
+    displayName: 'Seller';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    firstName: Attribute.String;
+    lastName: Attribute.String;
+    zipCode: Attribute.String;
+    registerNumber: Attribute.String;
+    email: Attribute.Email;
+    tradeName: Attribute.String & Attribute.Required & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::seller.seller',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::seller.seller',
       'oneToOne',
       'admin::user'
     > &
@@ -1137,11 +1245,13 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::brand.brand': ApiBrandBrand;
       'api::category.category': ApiCategoryCategory;
+      'api::checkout.checkout': ApiCheckoutCheckout;
       'api::color.color': ApiColorColor;
       'api::customer.customer': ApiCustomerCustomer;
       'api::image.image': ApiImageImage;
       'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
+      'api::seller.seller': ApiSellerSeller;
       'api::size.size': ApiSizeSize;
     }
   }

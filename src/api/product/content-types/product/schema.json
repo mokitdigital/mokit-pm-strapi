@@ -89,25 +89,26 @@
     "width": {
       "type": "decimal",
       "required": true,
-      "min": 15,
+      "min": 0,
       "max": 100
     },
     "height": {
       "type": "decimal",
       "required": true,
-      "min": 1,
+      "min": 0,
       "max": 100
     },
     "length": {
       "type": "decimal",
-      "min": 15,
+      "min": 0,
       "max": 100,
       "required": true
     },
     "weight": {
       "type": "decimal",
-      "min": 100,
-      "max": 30000
+      "min": 0,
+      "max": 30000,
+      "required": true
     },
     "checkout": {
       "type": "relation",

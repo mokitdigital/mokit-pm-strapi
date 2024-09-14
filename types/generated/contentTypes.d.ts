@@ -1111,7 +1111,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.Required &
       Attribute.SetMinMax<
         {
-          min: 15;
+          min: 0;
           max: 100;
         },
         number
@@ -1120,7 +1120,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.Required &
       Attribute.SetMinMax<
         {
-          min: 1;
+          min: 0;
           max: 100;
         },
         number
@@ -1129,15 +1129,16 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.Required &
       Attribute.SetMinMax<
         {
-          min: 15;
+          min: 0;
           max: 100;
         },
         number
       >;
     weight: Attribute.Decimal &
+      Attribute.Required &
       Attribute.SetMinMax<
         {
-          min: 100;
+          min: 0;
           max: 30000;
         },
         number

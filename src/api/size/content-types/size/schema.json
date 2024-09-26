@@ -20,6 +20,12 @@
       "relation": "manyToOne",
       "target": "api::product.product",
       "inversedBy": "sizes"
+    },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item",
+      "mappedBy": "size"
     }
   }
 }

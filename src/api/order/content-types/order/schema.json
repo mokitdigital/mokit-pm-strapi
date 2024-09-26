@@ -12,12 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "products": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::product.product",
-      "inversedBy": "orders"
-    },
     "totalPrice": {
       "type": "float",
       "required": true
@@ -52,16 +46,9 @@
         "declined"
       ]
     },
-    "orderDate": {
-      "type": "datetime",
-      "required": true
-    },
-    "shippingFee": {
+    "shippingRate": {
       "type": "float",
       "required": false
-    },
-    "discountCode": {
-      "type": "string"
     },
     "discountValue": {
       "type": "float"
@@ -75,9 +62,41 @@
       "target": "api::customer.customer",
       "inversedBy": "orders"
     },
-    "shippingAddress": {
-      "type": "json",
-      "required": true
+    "zipCode": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "addressNumber": {
+      "type": "string"
+    },
+    "complement": {
+      "type": "string"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "orders"
+    },
+    "coupon": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::coupon.coupon",
+      "inversedBy": "order"
+    },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item",
+      "mappedBy": "order"
     }
   }
 }

@@ -11,6 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 type ApiProduct = Attribute.GetValues<'api::product.product'>;
+type ApiOrderItem = Attribute.GetValues<'api::order-item.order-item'>;
 
 export default factories.createCoreController('api::checkout.checkout', ({ strapi }) => ({
 
@@ -18,18 +19,19 @@ export default factories.createCoreController('api::checkout.checkout', ({ strap
     const { 
       sellerId,
       customerId,
+      orderItemsIds,
       zipCode,
-      products,
      } = ctx.request.body;
 
     try {
       
       const customer = await strapi.entityService.findOne('api::customer.customer', customerId)
-      const productsList: ApiProduct[] = await strapi.entityService.findMany('api::product.product', {
-        filters: { id: { $in: products.map((product: any) => product.id) } },
+      const orderItems: ApiOrderItem[] = await strapi.entityService.findMany('api::order-item.order-item', {
+        filters: { id: { $in: orderItemsIds.map((item: any) => item) } },
         populate: {
-          images: true,
-          category: true
+          products: {
+            populate: '*'
+          }
         }
       })
 
@@ -56,11 +58,22 @@ export default factories.createCoreController('api::checkout.checkout', ({ strap
         return ctx.badRequest('Error creating shipping rate');
       }
 
-      console.log(shippingRate);
-
-      /* const session = await stripe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
-        line_items: items,
+        line_items: orderItems.map((item) => {
+          return item.products.map((product) => {
+            return {
+              price_data: {
+                currency: 'brl',
+                product_data: {
+                  name: product.name
+                },
+                unit_amount: product.price
+              },
+              quantity: item.quantity
+            }
+          })
+        }).flat(),
         mode: 'payment',
         success_url: 'http://localhost:3000/payment/success',
         cancel_url: 'http://localhost:3000/payment/cancel',
@@ -70,7 +83,7 @@ export default factories.createCoreController('api::checkout.checkout', ({ strap
             shipping_rate: shippingRate.id
           }
         ]
-      }); */
+      });
 
       return ctx.send({ shippingRate });
     } catch (err) {

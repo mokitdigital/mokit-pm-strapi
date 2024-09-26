@@ -829,6 +829,7 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
     singularName: 'category';
     pluralName: 'categories';
     displayName: 'Category';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -840,6 +841,7 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'oneToMany',
       'api::product.product'
     >;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -896,6 +898,7 @@ export interface ApiColorColor extends Schema.CollectionType {
     singularName: 'color';
     pluralName: 'colors';
     displayName: 'Color';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -906,6 +909,12 @@ export interface ApiColorColor extends Schema.CollectionType {
       'api::color.color',
       'manyToOne',
       'api::product.product'
+    >;
+    hex: Attribute.String;
+    order_items: Attribute.Relation<
+      'api::color.color',
+      'oneToMany',
+      'api::order-item.order-item'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -924,12 +933,48 @@ export interface ApiColorColor extends Schema.CollectionType {
   };
 }
 
+export interface ApiCouponCoupon extends Schema.CollectionType {
+  collectionName: 'coupons';
+  info: {
+    singularName: 'coupon';
+    pluralName: 'coupons';
+    displayName: 'Coupon';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    value: Attribute.Decimal;
+    order: Attribute.Relation<
+      'api::coupon.coupon',
+      'oneToOne',
+      'api::order.order'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::coupon.coupon',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::coupon.coupon',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCustomerCustomer extends Schema.CollectionType {
   collectionName: 'customers';
   info: {
     singularName: 'customer';
     pluralName: 'customers';
     displayName: 'Customer';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -938,8 +983,6 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
     fullName: Attribute.String & Attribute.Required;
     email: Attribute.String & Attribute.Required & Attribute.Unique;
     phoneNumber: Attribute.String;
-    shippingAddress: Attribute.Text;
-    taxId: Attribute.String;
     birthdate: Attribute.Date;
     gender: Attribute.Enumeration<['male', 'female', 'other']>;
     accountStatus: Attribute.Enumeration<['active', 'inactive']>;
@@ -948,6 +991,12 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
       'oneToMany',
       'api::order.order'
     >;
+    receivePromotions: Attribute.Boolean;
+    shareData: Attribute.Boolean;
+    photo: Attribute.String;
+    password: Attribute.Password;
+    addressMain: Attribute.JSON;
+    addressSecondary: Attribute.JSON;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1011,11 +1060,6 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    products: Attribute.Relation<
-      'api::order.order',
-      'manyToMany',
-      'api::product.product'
-    >;
     totalPrice: Attribute.Float & Attribute.Required;
     status: Attribute.Enumeration<
       ['pending', 'processing', 'sent', 'delivered', 'canceled']
@@ -1025,9 +1069,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     paymentMethod: Attribute.Enumeration<['PIX', 'CREDIT', 'DEBIT', 'BOLETO']> &
       Attribute.Required;
     paymentStatus: Attribute.Enumeration<['approved', 'pending', 'declined']>;
-    orderDate: Attribute.DateTime & Attribute.Required;
-    shippingFee: Attribute.Float;
-    discountCode: Attribute.String;
+    shippingRate: Attribute.Float;
     discountValue: Attribute.Float;
     orderNotes: Attribute.Text;
     customer: Attribute.Relation<
@@ -1035,7 +1077,27 @@ export interface ApiOrderOrder extends Schema.CollectionType {
       'manyToOne',
       'api::customer.customer'
     >;
-    shippingAddress: Attribute.JSON & Attribute.Required;
+    zipCode: Attribute.String;
+    state: Attribute.String;
+    city: Attribute.String;
+    address: Attribute.String;
+    addressNumber: Attribute.String;
+    complement: Attribute.String;
+    seller: Attribute.Relation<
+      'api::order.order',
+      'manyToOne',
+      'api::seller.seller'
+    >;
+    coupon: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'api::coupon.coupon'
+    >;
+    order_items: Attribute.Relation<
+      'api::order.order',
+      'oneToMany',
+      'api::order-item.order-item'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1046,6 +1108,55 @@ export interface ApiOrderOrder extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiOrderItemOrderItem extends Schema.CollectionType {
+  collectionName: 'order_items';
+  info: {
+    singularName: 'order-item';
+    pluralName: 'order-items';
+    displayName: 'OrderItem';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    products: Attribute.Relation<
+      'api::order-item.order-item',
+      'manyToMany',
+      'api::product.product'
+    >;
+    quantity: Attribute.Integer;
+    color: Attribute.Relation<
+      'api::order-item.order-item',
+      'manyToOne',
+      'api::color.color'
+    >;
+    size: Attribute.Relation<
+      'api::order-item.order-item',
+      'manyToOne',
+      'api::size.size'
+    >;
+    order: Attribute.Relation<
+      'api::order-item.order-item',
+      'manyToOne',
+      'api::order.order'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::order-item.order-item',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::order-item.order-item',
       'oneToOne',
       'admin::user'
     > &
@@ -1095,11 +1206,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'oneToMany',
       'api::size.size'
     >;
-    orders: Attribute.Relation<
-      'api::product.product',
-      'manyToMany',
-      'api::order.order'
-    >;
     images: Attribute.Relation<
       'api::product.product',
       'oneToMany',
@@ -1143,10 +1249,10 @@ export interface ApiProductProduct extends Schema.CollectionType {
         },
         number
       >;
-    checkout: Attribute.Relation<
+    order_items: Attribute.Relation<
       'api::product.product',
-      'manyToOne',
-      'api::checkout.checkout'
+      'manyToMany',
+      'api::order-item.order-item'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1183,6 +1289,11 @@ export interface ApiSellerSeller extends Schema.CollectionType {
     registerNumber: Attribute.String;
     email: Attribute.Email;
     tradeName: Attribute.String & Attribute.Required & Attribute.Unique;
+    orders: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::order.order'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1217,6 +1328,11 @@ export interface ApiSizeSize extends Schema.CollectionType {
       'manyToOne',
       'api::product.product'
     >;
+    order_items: Attribute.Relation<
+      'api::size.size',
+      'oneToMany',
+      'api::order-item.order-item'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::size.size', 'oneToOne', 'admin::user'> &
@@ -1248,9 +1364,11 @@ declare module '@strapi/types' {
       'api::category.category': ApiCategoryCategory;
       'api::checkout.checkout': ApiCheckoutCheckout;
       'api::color.color': ApiColorColor;
+      'api::coupon.coupon': ApiCouponCoupon;
       'api::customer.customer': ApiCustomerCustomer;
       'api::image.image': ApiImageImage;
       'api::order.order': ApiOrderOrder;
+      'api::order-item.order-item': ApiOrderItemOrderItem;
       'api::product.product': ApiProductProduct;
       'api::seller.seller': ApiSellerSeller;
       'api::size.size': ApiSizeSize;

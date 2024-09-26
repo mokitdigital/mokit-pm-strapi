@@ -67,12 +67,6 @@
       "target": "api::size.size",
       "mappedBy": "product"
     },
-    "orders": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::order.order",
-      "mappedBy": "products"
-    },
     "images": {
       "type": "relation",
       "relation": "oneToMany",
@@ -110,11 +104,11 @@
       "max": 30000,
       "required": true
     },
-    "checkout": {
+    "order_items": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::checkout.checkout",
-      "inversedBy": "products"
+      "relation": "manyToMany",
+      "target": "api::order-item.order-item",
+      "mappedBy": "products"
     }
   }
 }

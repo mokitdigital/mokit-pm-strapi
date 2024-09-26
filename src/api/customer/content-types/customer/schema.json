@@ -4,7 +4,8 @@
   "info": {
     "singularName": "customer",
     "pluralName": "customers",
-    "displayName": "Customer"
+    "displayName": "Customer",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -23,13 +24,6 @@
     "phoneNumber": {
       "type": "string",
       "unique": false
-    },
-    "shippingAddress": {
-      "type": "text",
-      "required": false
-    },
-    "taxId": {
-      "type": "string"
     },
     "birthdate": {
       "type": "date"
@@ -54,6 +48,24 @@
       "relation": "oneToMany",
       "target": "api::order.order",
       "mappedBy": "customer"
+    },
+    "receivePromotions": {
+      "type": "boolean"
+    },
+    "shareData": {
+      "type": "boolean"
+    },
+    "photo": {
+      "type": "string"
+    },
+    "password": {
+      "type": "password"
+    },
+    "addressMain": {
+      "type": "json"
+    },
+    "addressSecondary": {
+      "type": "json"
     }
   }
 }

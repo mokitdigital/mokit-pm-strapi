@@ -32,6 +32,12 @@
       "type": "string",
       "unique": true,
       "required": true
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "seller"
     }
   }
 }

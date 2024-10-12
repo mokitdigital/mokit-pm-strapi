@@ -1211,11 +1211,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToOne',
       'api::category.category'
     >;
-    sizes: Attribute.Relation<
-      'api::product.product',
-      'oneToMany',
-      'api::size.size'
-    >;
     images: Attribute.Relation<
       'api::product.product',
       'oneToMany',
@@ -1263,6 +1258,11 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'api::product.product',
       'oneToMany',
       'api::order-item.order-item'
+    >;
+    sizes: Attribute.Relation<
+      'api::product.product',
+      'manyToMany',
+      'api::size.size'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1327,15 +1327,16 @@ export interface ApiSizeSize extends Schema.CollectionType {
     singularName: 'size';
     pluralName: 'sizes';
     displayName: 'Size';
+    description: '';
   };
   options: {
     draftAndPublish: false;
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
-    product: Attribute.Relation<
+    products: Attribute.Relation<
       'api::size.size',
-      'manyToOne',
+      'manyToMany',
       'api::product.product'
     >;
     order_items: Attribute.Relation<

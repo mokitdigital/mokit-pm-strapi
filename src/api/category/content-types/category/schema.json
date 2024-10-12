@@ -26,6 +26,12 @@
       "type": "string",
       "unique": true,
       "required": true
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "categories"
     }
   }
 }

@@ -27,6 +27,12 @@
       "relation": "oneToMany",
       "target": "api::order-item.order-item",
       "mappedBy": "size"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "sizes"
     }
   }
 }

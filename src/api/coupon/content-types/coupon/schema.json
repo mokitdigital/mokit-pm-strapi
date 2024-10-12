@@ -4,7 +4,8 @@
   "info": {
     "singularName": "coupon",
     "pluralName": "coupons",
-    "displayName": "Coupon"
+    "displayName": "Coupon",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -24,6 +25,11 @@
       "relation": "oneToOne",
       "target": "api::order.order",
       "mappedBy": "coupon"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::seller.seller"
     }
   }
 }

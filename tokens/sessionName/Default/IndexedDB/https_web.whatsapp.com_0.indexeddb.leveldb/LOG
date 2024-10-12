@@ -1,5 +1,0 @@
-2024/10/10-22:54:45.313 17252 Creating DB /home/luansilveira/demos/mokit-pm-strapi/tokens/sessionName/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
-2024/10/10-22:54:45.460 17252 Reusing MANIFEST /home/luansilveira/demos/mokit-pm-strapi/tokens/sessionName/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/10/11-15:53:57.280 17252 Level-0 table #5: started
-2024/10/11-15:53:57.580 17252 Level-0 table #5: 1126822 bytes OK
-2024/10/11-15:53:57.613 17252 Delete type=0 #3

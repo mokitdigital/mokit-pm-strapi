@@ -109,6 +109,12 @@
       "relation": "manyToMany",
       "target": "api::size.size",
       "mappedBy": "products"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "products"
     }
   }
 }

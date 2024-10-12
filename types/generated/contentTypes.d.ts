@@ -806,6 +806,11 @@ export interface ApiBrandBrand extends Schema.CollectionType {
       'oneToMany',
       'api::product.product'
     >;
+    seller: Attribute.Relation<
+      'api::brand.brand',
+      'manyToOne',
+      'api::seller.seller'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -842,6 +847,11 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'api::product.product'
     >;
     slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    seller: Attribute.Relation<
+      'api::category.category',
+      'manyToOne',
+      'api::seller.seller'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -906,6 +916,7 @@ export interface ApiCouponCoupon extends Schema.CollectionType {
     singularName: 'coupon';
     pluralName: 'coupons';
     displayName: 'Coupon';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -917,6 +928,11 @@ export interface ApiCouponCoupon extends Schema.CollectionType {
       'api::coupon.coupon',
       'oneToOne',
       'api::order.order'
+    >;
+    seller: Attribute.Relation<
+      'api::coupon.coupon',
+      'oneToOne',
+      'api::seller.seller'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -964,6 +980,11 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
     password: Attribute.Password;
     addressMain: Attribute.JSON;
     addressSecondary: Attribute.JSON;
+    seller: Attribute.Relation<
+      'api::customer.customer',
+      'manyToOne',
+      'api::seller.seller'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1264,6 +1285,11 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToMany',
       'api::size.size'
     >;
+    seller: Attribute.Relation<
+      'api::product.product',
+      'manyToOne',
+      'api::seller.seller'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1304,6 +1330,31 @@ export interface ApiSellerSeller extends Schema.CollectionType {
       'oneToMany',
       'api::order.order'
     >;
+    brands: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::brand.brand'
+    >;
+    categories: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::category.category'
+    >;
+    customers: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::customer.customer'
+    >;
+    products: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::product.product'
+    >;
+    sizes: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::size.size'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1343,6 +1394,11 @@ export interface ApiSizeSize extends Schema.CollectionType {
       'api::size.size',
       'oneToMany',
       'api::order-item.order-item'
+    >;
+    seller: Attribute.Relation<
+      'api::size.size',
+      'manyToOne',
+      'api::seller.seller'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

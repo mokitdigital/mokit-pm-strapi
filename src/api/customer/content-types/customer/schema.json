@@ -66,6 +66,12 @@
     },
     "addressSecondary": {
       "type": "json"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "customers"
     }
   }
 }

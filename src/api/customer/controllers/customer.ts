@@ -2,12 +2,9 @@
  * customer controller
  */
 
-import { Attribute, factories } from '@strapi/strapi'
+import { factories } from '@strapi/strapi'
 import { calculateDistance } from '../utils/calculate-distance';
 import { melhorEnvio } from '../../../service/melhor-envio';
-
-type ApiProduct = Attribute.GetValues<'api::product.product'>;
-type ApiSeller = Attribute.GetValues<'api::seller.seller'>;
 
 export default factories.createCoreController('api::customer.customer', ({ strapi }) => ({
   async create(ctx) {
@@ -34,14 +31,14 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       return ctx.badRequest('Missing required fields.');
     }
 
-    const seller: ApiSeller = await strapi.entityService.findOne('api::seller.seller', sellerId);
+    const seller = await strapi.entityService.findOne('api::seller.seller', sellerId);
 
     if (!seller) {
       return ctx.notFound('Seller not found.');
     }
 
     const productIds = products.map((product: any) => product.id);
-    const productsList: ApiProduct[] = await strapi.entityService.findMany('api::product.product', {
+    const productsList = await strapi.entityService.findMany('api::product.product', {
       filters: { id: { $in: productIds } }
     });
 

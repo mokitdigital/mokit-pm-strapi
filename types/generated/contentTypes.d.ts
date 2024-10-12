@@ -859,39 +859,6 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
 }
 
-export interface ApiCheckoutCheckout extends Schema.CollectionType {
-  collectionName: 'checkouts';
-  info: {
-    singularName: 'checkout';
-    pluralName: 'checkouts';
-    displayName: 'Checkout';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    products: Attribute.Relation<
-      'api::checkout.checkout',
-      'oneToMany',
-      'api::product.product'
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::checkout.checkout',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::checkout.checkout',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiColorColor extends Schema.CollectionType {
   collectionName: 'colors';
   info: {
@@ -1098,6 +1065,11 @@ export interface ApiOrderOrder extends Schema.CollectionType {
       'oneToMany',
       'api::order-item.order-item'
     >;
+    payment: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'api::payment.payment'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1121,14 +1093,15 @@ export interface ApiOrderItemOrderItem extends Schema.CollectionType {
     singularName: 'order-item';
     pluralName: 'order-items';
     displayName: 'OrderItem';
+    description: '';
   };
   options: {
     draftAndPublish: false;
   };
   attributes: {
-    products: Attribute.Relation<
+    product: Attribute.Relation<
       'api::order-item.order-item',
-      'manyToMany',
+      'manyToOne',
       'api::product.product'
     >;
     quantity: Attribute.Integer;
@@ -1157,6 +1130,43 @@ export interface ApiOrderItemOrderItem extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::order-item.order-item',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPaymentPayment extends Schema.CollectionType {
+  collectionName: 'payments';
+  info: {
+    singularName: 'payment';
+    pluralName: 'payments';
+    displayName: 'Payment';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    order: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'api::order.order'
+    >;
+    transactionId: Attribute.String & Attribute.Unique;
+    status: Attribute.Enumeration<['paid', 'cancelled', 'in process']> &
+      Attribute.DefaultTo<'in process'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::payment.payment',
       'oneToOne',
       'admin::user'
     > &
@@ -1251,7 +1261,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       >;
     order_items: Attribute.Relation<
       'api::product.product',
-      'manyToMany',
+      'oneToMany',
       'api::order-item.order-item'
     >;
     createdAt: Attribute.DateTime;
@@ -1362,13 +1372,13 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::brand.brand': ApiBrandBrand;
       'api::category.category': ApiCategoryCategory;
-      'api::checkout.checkout': ApiCheckoutCheckout;
       'api::color.color': ApiColorColor;
       'api::coupon.coupon': ApiCouponCoupon;
       'api::customer.customer': ApiCustomerCustomer;
       'api::image.image': ApiImageImage;
       'api::order.order': ApiOrderOrder;
       'api::order-item.order-item': ApiOrderItemOrderItem;
+      'api::payment.payment': ApiPaymentPayment;
       'api::product.product': ApiProductProduct;
       'api::seller.seller': ApiSellerSeller;
       'api::size.size': ApiSizeSize;

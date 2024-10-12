@@ -2,15 +2,13 @@
  * order controller
  */
 
-import { Attribute, factories } from '@strapi/strapi'
+import { factories } from '@strapi/strapi'
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br'
+import { sendEmailToCustomer } from '../../../service/nodemailer/nodemailer';
+import twilio from '../../../service/twilio';
 
 dayjs.locale('pt-br');
-
-type ApiProduct = Attribute.GetValues<'api::product.product'>;
-type ApiOrderItem = Attribute.GetValues<'api::order-item.order-item'>;
-
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async create(ctx) {
     try {
@@ -30,7 +28,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         totalPrice,
         orderNotes,
         shippingRate
-      } = ctx.request.body;
+      } = ctx.request.body.data;
 
       const coupon = await strapi.entityService.findOne('api::coupon.coupon', couponId);
     
@@ -69,17 +67,46 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       fields: ['totalPrice', 'createdAt'],
     });
 
-    const monthlySales = orders.reduce((acc, order) => {
+    const monthlySales = {} /* orders.reduce((acc, order) => {
       const month = dayjs(order.createdAt).locale('pt-br').format('MMMM');
       if (!acc[month]) {
         acc[month] = { name: month, totalSales: 0 };
       }
       acc[month].totalSales += order.totalPrice;
       return acc;
-    }, {});
+    }, {}); */
 
     console.log(monthlySales);
 
     ctx.body = Object.values(monthlySales);
+  },
+  async getOrderUpdates(ctx) {
+    try {
+      const updatedOrders = await strapi.entityService.findMany('api::order.order', {
+        filters: {
+          id: ctx.request.query.id,
+        },
+        populate: {
+          customer: true,
+          seller: true,
+          order_items: {
+            populate: {
+              product: true,
+            },
+          }
+        },
+      });
+      
+      // await sendEmailToCustomer(updatedOrders[0].seller, updatedOrders[0].customer, updatedOrders);
+      // await twilio.sendWhatsAppMessage("+555193394478", `Pedido atualizado: ${updatedOrders[0].id}`);
+ 
+      ctx.send({
+        message: 'E-mail enviados com sucesso',
+        updatedOrders,
+      });
+    } catch (err) {
+      console.log(err);
+      ctx.throw(500, 'Erro ao buscar atualizações de pedidos e enviar e-mails');
+    }
   },
 }));

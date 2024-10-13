@@ -24,6 +24,7 @@ export default factories.createCoreController(
         width,
         length,
         weight,
+        seller,
       } = JSON.parse(ctx.request.body);
 
       if (!images) {
@@ -68,6 +69,7 @@ export default factories.createCoreController(
             width,
             length,
             weight,
+            seller,
           },
         }
       );

@@ -742,7 +742,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     username: Attribute.String &
@@ -770,6 +769,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.user',
       'manyToOne',
       'plugin::users-permissions.role'
+    >;
+    seller: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToOne',
+      'api::seller.seller'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

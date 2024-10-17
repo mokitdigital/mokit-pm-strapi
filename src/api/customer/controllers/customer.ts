@@ -74,6 +74,9 @@ export default factories.createCoreController('api::customer.customer', ({ strap
     }
 
     try {
+      console.log("Google Maps API Key:", process.env.GOOGLE_MAPS_API_KEY);
+      console.log("Zip Code:", zipCode);
+      console.log("Seller Zip Code:", seller.zipCode);
       const originResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${seller.zipCode}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
       const originData = await originResponse.json();
       const originLocation = originData.results[0].geometry.location;

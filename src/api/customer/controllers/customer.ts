@@ -104,7 +104,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         destinationLocation.lng
       );
 
-      if (distance <= 10) {
+      if (distance <= 5) {
         ctx.body = [{
           id: 1,
           available: true,
@@ -130,6 +130,25 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       ctx.status = 200;
     } catch (error) {
       strapi.log.error('Error calculating distance', error);
+      ctx.body = [{
+        id: 1,
+        available: true,
+        name: "Motoboy",
+        price: 15.0,
+        custom_price: 15.0,
+        currency: "R$",
+        delivery_time: 6,
+        delivery_range: {
+          min: 4,
+          max: 5
+        },
+        company: {
+          id: 1,
+          name: "Motoboy",
+          picture: ""
+        },
+        erro: error
+      }]
       ctx.throw(500, 'Failed to calculate shipping distance.');
     }
   }

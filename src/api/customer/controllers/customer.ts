@@ -81,6 +81,19 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       const destinationData = await destinationResponse.json();
       const destinationLocation = destinationData.results[0].geometry.location;
 
+      console.log("Origin Location:", originLocation);
+      console.log("Destination Location:", destinationLocation);
+
+      if (!originLocation || !destinationLocation) {
+        return ctx.notFound('Origin or destination not found.');
+      }
+
+      console.log("Distance:", calculateDistance(originLocation.lat, originLocation.lng, destinationLocation.lat, destinationLocation.lng));
+
+      if (!originLocation.lat || !originLocation.lng || !destinationLocation.lat || !destinationLocation.lng) {
+        return ctx.notFound('Origin or destination not found.');
+      }
+
       const distance = calculateDistance(
         originLocation.lat,
         originLocation.lng,

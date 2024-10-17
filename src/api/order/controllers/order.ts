@@ -4,61 +4,69 @@
 
 import { factories } from '@strapi/strapi'
 import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br'
-import { sendEmailToCustomer } from '../../../service/nodemailer/nodemailer';
-import twilio from '../../../service/twilio';
+import 'dayjs/locale/pt-br';
 
 dayjs.locale('pt-br');
+
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async create(ctx) {
     try {
-      const {
-        order_items,
-        sellerId,
-        customerId,
-        couponId,
+      const { data } = ctx.request.body;
 
-        zipCode,
-        state,
-        city,
-        address,
-        addressNumber,
-        complement,
-        paymentMethod,
-        totalPrice,
-        orderNotes,
-        shippingRate
-      } = ctx.request.body.data;
+      if (data.order_items && data.order_items.length) {
+        const items = [];
+        for (let i = 0; i < data.order_items.length; i++) {
+          const item = data.order_items[i];
+          const colorEntity = await strapi.entityService.findMany('api::color.color', {
+            filters: { name: item.color },
+          });
+          const sizeEntity = await strapi.entityService.findMany('api::size.size', {
+            filters: { name: item.size },
+          });
+          const newItem = await strapi.entityService.create('api::order-item.order-item', { data: {
+            ...item,
+            color: colorEntity[0].id,
+            size: sizeEntity[0].id,
+          } });
 
-      const coupon = await strapi.entityService.findOne('api::coupon.coupon', couponId);
-    
-      const order = await strapi.entityService.create('api::order.order', {
+          items.push(newItem);
+        }
+        data.order_items = items;
+      } else {
+        strapi.log.error('No order_items found in the request');
+        ctx.throw(400, 'No order_items found in the request');
+      }
+
+      data.payment = await strapi.entityService.create('api::payment.payment', {
         data: {
-          customer: customerId,
-          paymentMethod: paymentMethod,
-          totalPrice: totalPrice,
-          status: 'pending',
-          shippingRate: shippingRate,
-          paymentStatus: 'pending',
-          zipCode: zipCode,
-          state: state,
-          city: city,
-          discountValue: coupon ? coupon.value : 0,
-          address: address,
-          addressNumber: addressNumber,
-          complement: complement,
-          orderNotes: orderNotes,
-          seller: sellerId,
-          coupon: coupon ? coupon.id : null,
-          order_items: order_items,
+          status: 'in process',
         }
       });
 
-      ctx.body = order;
-      ctx.status = 201;
+      data.customer = await strapi.entityService.findMany('api::customer.customer', {
+        filters: {
+          email: data.email
+        }
+      })
+
+      const response = await strapi.entityService.create('api::order.order', { 
+        data,
+        populate: {
+          order_items: {
+            populate: ['color', 'size', 'product'],
+          },
+          payment: true,
+          customer: true,
+          seller: true,
+        }
+      });
+
+      strapi.log.info('Order created successfully: ', JSON.stringify(response));
+      return response;
+
     } catch (error) {
-      strapi.log.error('Error create order: ', error);
-      ctx.throw(400, (error as Error).message);
+      strapi.log.error('Unexpected error during order creation: ', error);
+      ctx.throw(400, error.message || 'Error creating order');
     }
   },
   async monthlySales(ctx) {
@@ -96,10 +104,10 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
           }
         },
       });
-      
+
       // await sendEmailToCustomer(updatedOrders[0].seller, updatedOrders[0].customer, updatedOrders);
       // await twilio.sendWhatsAppMessage("+555193394478", `Pedido atualizado: ${updatedOrders[0].id}`);
- 
+
       ctx.send({
         message: 'E-mail enviados com sucesso',
         updatedOrders,

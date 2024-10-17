@@ -7,23 +7,6 @@ import { calculateDistance } from '../utils/calculate-distance';
 import { melhorEnvio } from '../../../service/melhor-envio';
 
 export default factories.createCoreController('api::customer.customer', ({ strapi }) => ({
-  async create(ctx) {
-    const body = ctx.request.body;
-
-    try {
-      const customer = await strapi.entityService.create('api::customer.customer', {
-        data: {
-          ...body
-        }
-      });
-
-      ctx.body = customer;
-      ctx.status = 201;
-    } catch (err) {
-      strapi.log.error(err);
-      ctx.throw(500, err);
-    }
-  },
   async shippingRates(ctx) {
     const { sellerId, zipCode, products } = ctx.request.body;
 

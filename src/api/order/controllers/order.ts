@@ -71,20 +71,18 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
   },
   async monthlySales(ctx) {
     const orders = await strapi.entityService.findMany('api::order.order', {
-      filters: { status: 'delivered' },
-      fields: ['totalPrice', 'createdAt'],
+      filters: { status: 'delivered', seller: ctx.request.query.sellerId },
+      fields: ['totalPrice', 'updatedAt'],
     });
 
-    const monthlySales = {} /* orders.reduce((acc, order) => {
-      const month = dayjs(order.createdAt).locale('pt-br').format('MMMM');
+    const monthlySales = orders.reduce((acc, order) => {
+      const month = dayjs(order.updatedAt).locale('pt-br').format('MMMM');
       if (!acc[month]) {
         acc[month] = { name: month, totalSales: 0 };
       }
       acc[month].totalSales += order.totalPrice;
       return acc;
-    }, {}); */
-
-    console.log(monthlySales);
+    }, {});
 
     ctx.body = Object.values(monthlySales);
   },

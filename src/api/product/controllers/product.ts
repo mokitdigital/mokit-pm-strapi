@@ -56,7 +56,7 @@ export default factories.createCoreController(
             name,
             slug,
             description,
-            active: true,
+            active,
             currency: "BRL",
             price,
             brand,
@@ -77,6 +77,7 @@ export default factories.createCoreController(
       return (ctx.request.body = product);
     },
     async update(ctx) {
+      console.log("update product controller", ctx.request.body);
       const {
         name,
         slug,
@@ -87,32 +88,10 @@ export default factories.createCoreController(
         colors,
         category,
         sizes,
-        images,
         discount,
-      } = JSON.parse(ctx.request.body);
+        seller,
+      } = ctx.request.body;
       const { id } = ctx.params;
-
-      if (!images) {
-        return ctx.badRequest("Nenhum arquivo enviado");
-      }
-
-      let imageIds = [];
-      for (const img of images) {
-        const newImage = await strapi.entityService.create(
-          "api::image.image",
-          {
-            data: {
-              url: img,
-            },
-          }
-        );
-
-        imageIds.push(newImage);
-      }
-
-      if (!imageIds) {
-        return ctx.badRequest("Erro ao criar imagem");
-      }
 
       const product = await strapi.entityService.update(
         "api::product.product",
@@ -123,14 +102,13 @@ export default factories.createCoreController(
             slug,
             description,
             active: Boolean(active),
-            currency: "BRL",
             price,
             brand,
             colors,
             category,
             sizes,
             discount,
-            images: imageIds,
+            seller,
           },
         }
 

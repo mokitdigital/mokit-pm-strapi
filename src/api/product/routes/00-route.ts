@@ -8,13 +8,5 @@ export default {
         policies: ['global::is-owner'],
       },
     },
-    {
-      method: 'PUT',
-      path: '/products/:id',
-      handler: 'product.update',
-      config: {
-        policies: ['global::is-owner'],
-      },
-    },
   ],
 };

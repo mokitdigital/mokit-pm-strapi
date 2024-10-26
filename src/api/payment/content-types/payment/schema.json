@@ -20,7 +20,8 @@
     },
     "transactionId": {
       "type": "string",
-      "unique": true
+      "unique": true,
+      "required": true
     },
     "status": {
       "type": "enumeration",
@@ -30,6 +31,21 @@
         "in process"
       ],
       "default": "in process"
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "decimal"
+    },
+    "billingType": {
+      "type": "enumeration",
+      "enum": [
+        "CREDIT_CARD",
+        "PIX"
+      ],
+      "required": true
     }
   }
 }

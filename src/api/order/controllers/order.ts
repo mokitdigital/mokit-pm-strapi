@@ -5,6 +5,7 @@
 import { factories } from '@strapi/strapi'
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
+import { PaymentAsaasResponse } from '../../../service/asaas/payment-asaas';
 
 dayjs.locale('pt-br');
 
@@ -37,12 +38,6 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         ctx.throw(400, 'No order_items found in the request');
       }
 
-      data.payment = await strapi.entityService.create('api::payment.payment', {
-        data: {
-          status: 'in process',
-        }
-      });
-
       data.customer = await strapi.entityService.findMany('api::customer.customer', {
         filters: {
           email: data.email
@@ -61,9 +56,31 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         }
       });
 
-      strapi.log.info('Order created successfully: ', JSON.stringify(response));
-      return response;
+      const createTransaction: PaymentAsaasResponse = await strapi.service('api::payment.payment').createTransactionAsaas({
+        billingType: data.billingType,
+        chargeType: data.billingType === 'CREDIT_CARD' ? 'INSTALLMENT' : 'DETACHED',
+        name: `Pedido #${response.id}`,
+        description: `Pagamento do pedido #${response.id}`,
+        value: data.totalPrice,
+        maxInstallmentCount: 10,
+        notificationEnabled: true,
+        isAddressRequired: false,
+        dueDateLimitDays: 1,
+        dueDate: dayjs().add(1, 'day').format('YYYY-MM-DD'),
+      });
 
+      const payment = await strapi.entityService.create('api::payment.payment', {
+        data: {
+          status: 'in process',
+          url: createTransaction.url,
+          transactionId: createTransaction.id,
+          billingType: data.billingType,
+          value: data.totalPrice,
+          order: response.id
+        }
+      });
+
+      ctx.body = payment;
     } catch (error) {
       strapi.log.error('Unexpected error during order creation: ', error);
       ctx.throw(400, error.message || 'Error creating order');

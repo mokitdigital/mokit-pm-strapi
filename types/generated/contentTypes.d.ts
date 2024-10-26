@@ -938,6 +938,11 @@ export interface ApiCouponCoupon extends Schema.CollectionType {
       'oneToOne',
       'api::seller.seller'
     >;
+    customers: Attribute.Relation<
+      'api::coupon.coupon',
+      'manyToMany',
+      'api::customer.customer'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -988,6 +993,11 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
       'api::customer.customer',
       'manyToOne',
       'api::seller.seller'
+    >;
+    coupons: Attribute.Relation<
+      'api::customer.customer',
+      'manyToMany',
+      'api::coupon.coupon'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1058,9 +1068,6 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     > &
       Attribute.Required &
       Attribute.DefaultTo<'pending'>;
-    paymentMethod: Attribute.Enumeration<['PIX', 'CREDIT', 'DEBIT', 'BOLETO']> &
-      Attribute.Required;
-    paymentStatus: Attribute.Enumeration<['approved', 'pending', 'declined']>;
     shippingRate: Attribute.Float;
     discountValue: Attribute.Float;
     orderNotes: Attribute.Text;
@@ -1179,9 +1186,13 @@ export interface ApiPaymentPayment extends Schema.CollectionType {
       'oneToOne',
       'api::order.order'
     >;
-    transactionId: Attribute.String & Attribute.Unique;
+    transactionId: Attribute.String & Attribute.Required & Attribute.Unique;
     status: Attribute.Enumeration<['paid', 'cancelled', 'in process']> &
       Attribute.DefaultTo<'in process'>;
+    url: Attribute.String & Attribute.Required;
+    value: Attribute.Decimal;
+    billingType: Attribute.Enumeration<['CREDIT_CARD', 'PIX']> &
+      Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

@@ -28,24 +28,6 @@
       "default": "pending",
       "required": true
     },
-    "paymentMethod": {
-      "type": "enumeration",
-      "enum": [
-        "PIX",
-        "CREDIT",
-        "DEBIT",
-        "BOLETO"
-      ],
-      "required": true
-    },
-    "paymentStatus": {
-      "type": "enumeration",
-      "enum": [
-        "approved",
-        "pending",
-        "declined"
-      ]
-    },
     "shippingRate": {
       "type": "float",
       "required": false

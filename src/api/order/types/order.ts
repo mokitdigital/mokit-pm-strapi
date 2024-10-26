@@ -5,8 +5,6 @@ export interface Order {
   id: number;
   totalPrice: number;
   status: 'pending' | 'processing' | 'sent' | 'delivered' | 'canceled';
-  paymentMethod: 'PIX' | 'CREDIT' | 'DEBIT' | 'BOLETO';
-  paymentStatus?: 'approved' | 'pending' | 'declined';
   shippingRate?: number;
   discountValue?: number;
   orderNotes?: string;

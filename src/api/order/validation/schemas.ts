@@ -17,7 +17,6 @@ export const OrderCreateParserSchema = object().shape({
   address: string().required(),
   addressNumber: string().required(),
   complement: string(),
-  paymentMethod: mixed().oneOf(['PIX', 'DEBIT', 'CREDIT', 'BOLETO']).required(),
   totalPrice: number().required(),
   shippingRate: number().required(),
 });

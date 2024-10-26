@@ -6,8 +6,6 @@ export type OrderModel = {
   customerName: string;
   totalPrice: string;
   status: string;
-  paymentStatus: string;
-  paymentMethod: string;
   discount: string;
   shippingRate: string;
   fullAddress: string;
@@ -17,7 +15,12 @@ export type OrderModel = {
   }[];
 }
 
-export const OrderModel = (order: OrderModel) => (`
+export type PaymentModel = {
+  status: string;
+  billingType: string;
+}
+
+export const OrderModel = (order: OrderModel, payment: PaymentModel) => (`
   <!DOCTYPE html>
   <html
     xmlns:v="urn:schemas-microsoft-com:vml"
@@ -548,7 +551,7 @@ export const OrderModel = (order: OrderModel) => (`
                                             color: #573739;
                                           "
                                           ><strong>Método de Pagamento:</strong
-                                          >&nbsp;${order.paymentMethod}</span
+                                          >&nbsp;${payment.billingType}</span
                                         >
                                       </p>
                                       <p style="margin: 0; margin-bottom: 16px">
@@ -558,7 +561,7 @@ export const OrderModel = (order: OrderModel) => (`
                                             color: #573739;
                                           "
                                           ><strong>Status do Pagamento:</strong
-                                          >&nbsp;${order.paymentStatus}</span
+                                          >&nbsp;${payment.status}</span
                                         >
                                       </p>
                                       <p style="margin: 0; margin-bottom: 16px">

@@ -72,6 +72,12 @@
       "relation": "manyToOne",
       "target": "api::seller.seller",
       "inversedBy": "customers"
+    },
+    "coupons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::coupon.coupon",
+      "mappedBy": "customers"
     }
   }
 }

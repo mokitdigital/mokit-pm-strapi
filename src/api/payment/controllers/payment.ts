@@ -87,7 +87,7 @@ export default factories.createCoreController(
         {
           data: {
             status:
-              response.payment.status === "CONFIRMED"
+              response.payment.status === "CONFIRMED" || response.payment.status === "RECEIVED"
                 ? "paid"
                 : response.payment.status === "PENDING"
                 ? "in process"

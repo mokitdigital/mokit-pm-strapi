@@ -79,9 +79,17 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       console.log("Seller Zip Code:", seller.zipCode);
       const originResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${seller.zipCode}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
       const originData = await originResponse.json();
+      console.log("Origin Data:", originData);
+      if (!originData.results || originData.results.length === 0) {
+        return ctx.notFound('Origin not found.');
+      }
       const originLocation = originData.results[0].geometry.location;
       const destinationResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
       const destinationData = await destinationResponse.json();
+      console.log("Destination Data:", destinationData);
+      if (!destinationData.results || destinationData.results.length === 0) {
+        return ctx.notFound('Destination not found.');
+      }
       const destinationLocation = destinationData.results[0].geometry.location;
 
       console.log("Origin Location:", originLocation);
@@ -130,25 +138,6 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       ctx.status = 200;
     } catch (error) {
       strapi.log.error('Error calculating distance', error);
-      ctx.body = [{
-        id: 1,
-        available: true,
-        name: "Motoboy",
-        price: 15.0,
-        custom_price: 15.0,
-        currency: "R$",
-        delivery_time: 6,
-        delivery_range: {
-          min: 4,
-          max: 5
-        },
-        company: {
-          id: 1,
-          name: "Motoboy",
-          picture: ""
-        },
-        erro: error
-      }]
       ctx.throw(500, 'Failed to calculate shipping distance.');
     }
   }

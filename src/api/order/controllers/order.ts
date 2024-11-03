@@ -5,7 +5,27 @@
 import { factories } from '@strapi/strapi'
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
-import { PaymentAsaasResponse } from '../../../service/asaas/payment-asaas';
+
+type ChargeType = 'DETACHED' | 'INSTALLMENT'
+type BillingType = 'CREDIT_CARD' | 'PIX'
+
+type PaymentAsaasResponse = {
+  id: string
+  value: number,
+  active: boolean,
+  chargeType: ChargeType,
+  url: string,
+  billingType: BillingType,
+  subscriptionCycle: string | null,
+  description: string,
+  endDate: string,
+  deleted: boolean,
+  viewCount: number,
+  maxInstallmentCount: number,
+  dueDateLimitDays: number,
+  notificationEnabled: boolean,
+  isAddressRequired: boolean
+}
 
 dayjs.locale('pt-br');
 

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "size",
     "pluralName": "sizes",
-    "displayName": "Size"
+    "displayName": "Size",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -15,10 +16,22 @@
       "type": "string",
       "required": true
     },
-    "product": {
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "inversedBy": "sizes"
+    },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item",
+      "mappedBy": "size"
+    },
+    "seller": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::product.product",
+      "target": "api::seller.seller",
       "inversedBy": "sizes"
     }
   }

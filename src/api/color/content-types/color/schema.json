@@ -4,7 +4,8 @@
   "info": {
     "singularName": "color",
     "pluralName": "colors",
-    "displayName": "Color"
+    "displayName": "Color",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -20,6 +21,15 @@
       "relation": "manyToOne",
       "target": "api::product.product",
       "inversedBy": "colors"
+    },
+    "hex": {
+      "type": "string"
+    },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item",
+      "mappedBy": "color"
     }
   }
 }

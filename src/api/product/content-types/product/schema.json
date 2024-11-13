@@ -61,25 +61,60 @@
       "target": "api::category.category",
       "inversedBy": "products"
     },
-    "sizes": {
+    "images": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::size.size",
+      "target": "api::image.image",
       "mappedBy": "product"
     },
-    "images": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+    "discount": {
+      "type": "float",
+      "default": 0
     },
-    "orders": {
+    "rating": {
+      "type": "decimal"
+    },
+    "width": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "height": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "length": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100,
+      "required": true
+    },
+    "weight": {
+      "type": "decimal",
+      "min": 0,
+      "max": 30000,
+      "required": true
+    },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item",
+      "mappedBy": "product"
+    },
+    "sizes": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::order.order",
+      "target": "api::size.size",
       "mappedBy": "products"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "products"
     }
   }
 }

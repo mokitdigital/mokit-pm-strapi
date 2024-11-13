@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payments",
+  "info": {
+    "singularName": "payment",
+    "pluralName": "payments",
+    "displayName": "Payment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "order": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::order.order",
+      "inversedBy": "payment"
+    },
+    "transactionId": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "cancelled",
+        "in process"
+      ],
+      "default": "in process"
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "decimal"
+    },
+    "billingType": {
+      "type": "enumeration",
+      "enum": [
+        "CREDIT_CARD",
+        "PIX"
+      ],
+      "required": true
+    }
+  }
+}

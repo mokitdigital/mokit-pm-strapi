@@ -49,12 +49,6 @@
       "target": "api::brand.brand",
       "inversedBy": "products"
     },
-    "colors": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::color.color",
-      "mappedBy": "product"
-    },
     "category": {
       "type": "relation",
       "relation": "manyToOne",
@@ -126,6 +120,12 @@
       "relation": "oneToMany",
       "target": "api::customization.customization",
       "mappedBy": "product"
+    },
+    "colors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::color.color",
+      "mappedBy": "products"
     }
   }
 }

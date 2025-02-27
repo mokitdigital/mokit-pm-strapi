@@ -886,9 +886,9 @@ export interface ApiColorColor extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
-    product: Attribute.Relation<
+    products: Attribute.Relation<
       'api::color.color',
-      'manyToOne',
+      'manyToMany',
       'api::product.product'
     >;
     hex: Attribute.String;
@@ -1289,11 +1289,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToOne',
       'api::brand.brand'
     >;
-    colors: Attribute.Relation<
-      'api::product.product',
-      'oneToMany',
-      'api::color.color'
-    >;
     category: Attribute.Relation<
       'api::product.product',
       'manyToOne',
@@ -1364,6 +1359,11 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'api::product.product',
       'oneToMany',
       'api::customization.customization'
+    >;
+    colors: Attribute.Relation<
+      'api::product.product',
+      'manyToMany',
+      'api::color.color'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

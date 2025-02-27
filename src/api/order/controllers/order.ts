@@ -5,6 +5,7 @@
 import { factories } from '@strapi/strapi'
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
+import { sendEmailToCustomer } from '../../../service/nodemailer/nodemailer';
 
 type ChargeType = 'DETACHED' | 'INSTALLMENT'
 type BillingType = 'CREDIT_CARD' | 'PIX'
@@ -38,9 +39,12 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         const items = [];
         for (let i = 0; i < data.order_items.length; i++) {
           const item = data.order_items[i];
-          const colorEntity = await strapi.entityService.findMany('api::color.color', {
-            filters: { name: item.color },
-          });
+          let colorEntity = [];
+          if (!item.color || item.color !== '') {
+            colorEntity = await strapi.entityService.findMany('api::color.color', {
+              filters: { name: item.color },
+            });
+          }
           const sizeEntity = await strapi.entityService.findMany('api::size.size', {
             filters: { name: item.size },
           });
@@ -76,27 +80,14 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         }
       });
 
-      const createTransaction: PaymentAsaasResponse = await strapi.service('api::payment.payment').createTransactionAsaas({
-        billingType: data.billingType,
-        chargeType: data.billingType === 'CREDIT_CARD' ? 'INSTALLMENT' : 'DETACHED',
-        name: `Pedido #${response.id}`,
-        description: `Pagamento do pedido #${response.id}`,
-        value: data.totalPrice,
-        maxInstallmentCount: 10,
-        notificationEnabled: true,
-        isAddressRequired: false,
-        dueDateLimitDays: 1,
-        dueDate: dayjs().add(1, 'day').format('YYYY-MM-DD'),
-      });
-
       const payment = await strapi.entityService.create('api::payment.payment', {
         data: {
           status: 'in process',
-          url: createTransaction.url,
-          transactionId: createTransaction.id,
           billingType: data.billingType,
           value: data.totalPrice,
-          order: response.id
+          order: {
+            id: response.id
+          }
         }
       });
 
@@ -136,12 +127,13 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
             populate: {
               product: true,
             },
-          }
+          },
+          payment: true,
         },
       });
 
-      // await sendEmailToCustomer(updatedOrders[0].seller, updatedOrders[0].customer, updatedOrders);
-      // await twilio.sendWhatsAppMessage("+555193394478", `Pedido atualizado: ${updatedOrders[0].id}`);
+      await sendEmailToCustomer(updatedOrders[0].seller, updatedOrders[0].customer, updatedOrders);
+      
 
       ctx.send({
         message: 'E-mail enviados com sucesso',

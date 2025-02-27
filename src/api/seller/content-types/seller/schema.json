@@ -68,6 +68,20 @@
       "relation": "oneToMany",
       "target": "api::size.size",
       "mappedBy": "seller"
+    },
+    "latitude": {
+      "type": "float"
+    },
+    "longitude": {
+      "type": "float"
+    },
+    "pixKey": {
+      "type": "string",
+      "unique": false,
+      "required": false
+    },
+    "pixInformation": {
+      "type": "text"
     }
   }
 }

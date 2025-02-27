@@ -30,12 +30,12 @@ const translatePaymentMethod = (method: "PIX" | "CREDIT_CARD") => {
 };
 
 const translatePaymentStatus = (
-  status: "paid" | "cancelled" | "in process"
+  status: "paid" | "canceled" | "in process"
 ) => {
   switch (status) {
     case "paid":
       return "Pago";
-    case "cancelled":
+    case "canceled":
       return "Cancelado";
     case "in process":
       return "Em processo";
@@ -60,18 +60,18 @@ export async function sendEmailToCustomer(
 
   const orderModel: OrderModel = {
     href: `https://dev-franciny-produtos-love.vercel.app/`,
-    logo: `https://dev-franciny-produtos-love.vercel.app/_next/image?url=%2Flogo-1.png&w=96&q=75`,
-    customerName: `${customer.fullName}`,
-    discount: formatBRL(orders[0].discountValue),
-    fullAddress: `${orders[0].address}, ${orders[0].addressNumber} - ${orders[0].complement}, ${orders[0].city} - ${orders[0].state}`,
+    logo: `https://dev-franciny-produtos-love.vercel.app/_next/image?url=%2Flogo-2.png&w=96&q=75`,
+    customerName: `${customer?.fullName}`,
+    discount: formatBRL(orders[0]?.discountValue),
+    fullAddress: `${orders[0]?.address}, ${orders[0]?.addressNumber} - ${orders[0]?.complement}, ${orders[0]?.city} - ${orders[0]?.state}`,
     orderNumber: orders[0].id.toString(),
-    tradeName: seller.tradeName,
-    totalPrice: formatBRL(orders[0].totalPrice),
-    shippingRate: formatBRL(orders[0].shippingRate),
-    status: translateOrderStatus(orders[0].status),
-    itens: orders[0].order_items.map((item) => ({
-      name: item.product?.name,
-      quantity: item.quantity,
+    tradeName: seller?.tradeName,
+    totalPrice: formatBRL(orders[0]?.totalPrice),
+    shippingRate: formatBRL(orders[0]?.shippingRate),
+    status: translateOrderStatus(orders[0]?.status),
+    itens: orders[0]?.order_items.map((item) => ({
+      name: item?.product?.name,
+      quantity: item?.quantity,
     })),
   };
 
@@ -80,8 +80,8 @@ export async function sendEmailToCustomer(
     to: customer.email,
     subject: `Atualização de Pedido #${orders[0].id} - ${seller.tradeName}`,
     html: OrderModel(orderModel, {
-      status: translatePaymentStatus(orders[0].payment.status),
-      billingType: translatePaymentMethod(orders[0].payment.billingType),
+      status: translatePaymentStatus(orders[0]?.payment?.status),
+      billingType: translatePaymentMethod(orders[0]?.payment?.billingType),
     }),
   };
 

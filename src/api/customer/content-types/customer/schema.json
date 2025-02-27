@@ -16,11 +16,6 @@
       "type": "string",
       "required": true
     },
-    "email": {
-      "type": "string",
-      "required": true,
-      "unique": true
-    },
     "phoneNumber": {
       "type": "string",
       "unique": false
@@ -59,7 +54,8 @@
       "type": "string"
     },
     "password": {
-      "type": "password"
+      "type": "password",
+      "required": false
     },
     "addressMain": {
       "type": "json"
@@ -78,6 +74,11 @@
       "relation": "manyToMany",
       "target": "api::coupon.coupon",
       "mappedBy": "customers"
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
     }
   }
 }

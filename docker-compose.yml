@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: mokit-pm-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_USER: strapi_user
+      POSTGRES_PASSWORD: strapi_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # strapi:
+  #   build: .
+  #   container_name: mokit-pm-strapi
+  #   depends_on:
+  #     - postgres
+  #   ports:
+  #     - "1337:1337"
+  #   environment:
+  #     NODE_ENV: development
+  #     DATABASE_CLIENT: postgres
+  #     DATABASE_HOST: postgres
+  #     DATABASE_PORT: 5432
+  #     DATABASE_NAME: strapi
+  #     DATABASE_USERNAME: strapi_user
+  #     DATABASE_PASSWORD: strapi_password
+  #     JWT_SECRET: my_jwt_secret
+  #     ADMIN_JWT_SECRET: my_admin_jwt_secret
+  #     APP_KEYS: my_app_keys
+  #   volumes:
+  #     - ./data:/usr/src/app/data       # Dados persistentes do Strapi
+  #     - ./public:/usr/src/app/public   # Imagens e uploads
+  #     - ./src:/usr/src/app/src         # Código-fonte e configurações
+
+volumes:
+  postgres_data:
+  # strapi_data:

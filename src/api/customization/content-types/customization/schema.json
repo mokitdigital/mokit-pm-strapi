@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "colors",
+  "collectionName": "customizations",
   "info": {
-    "singularName": "color",
-    "pluralName": "colors",
-    "displayName": "Color",
+    "singularName": "customization",
+    "pluralName": "customizations",
+    "displayName": "Customization",
     "description": ""
   },
   "options": {
@@ -14,23 +14,22 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true
+      "maxLength": 20
+    },
+    "cost": {
+      "type": "decimal"
     },
     "product": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::product.product",
-      "inversedBy": "colors"
+      "inversedBy": "customizations"
     },
-    "hex": {
-      "type": "string",
-      "regex": "^[0-9A-Fa-f]{6}$"
-    },
-    "order_items": {
+    "order_item": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "oneToOne",
       "target": "api::order-item.order-item",
-      "mappedBy": "color"
+      "inversedBy": "customization"
     }
   }
 }

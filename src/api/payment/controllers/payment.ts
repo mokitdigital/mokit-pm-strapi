@@ -44,7 +44,7 @@ export default factories.createCoreController(
                 ? "paid"
                 : status === "PENDING"
                 ? "in process"
-                : "cancelled",
+                : "canceled",
           },
         }
       );

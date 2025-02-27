@@ -85,6 +85,12 @@
       "relation": "oneToOne",
       "target": "api::payment.payment",
       "mappedBy": "order"
+    },
+    "subtotalPrice": {
+      "type": "decimal"
+    },
+    "shippingTime": {
+      "type": "integer"
     }
   }
 }

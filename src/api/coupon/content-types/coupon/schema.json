@@ -36,6 +36,14 @@
       "relation": "manyToMany",
       "target": "api::customer.customer",
       "inversedBy": "coupons"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "fixed",
+        "percentage"
+      ],
+      "required": true
     }
   }
 }

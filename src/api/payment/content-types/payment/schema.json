@@ -21,20 +21,20 @@
     "transactionId": {
       "type": "string",
       "unique": true,
-      "required": true
+      "required": false
     },
     "status": {
       "type": "enumeration",
       "enum": [
         "paid",
-        "cancelled",
+        "canceled",
         "in process"
       ],
       "default": "in process"
     },
     "url": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "value": {
       "type": "decimal"
@@ -46,6 +46,9 @@
         "PIX"
       ],
       "required": true
+    },
+    "aut": {
+      "type": "string"
     }
   }
 }

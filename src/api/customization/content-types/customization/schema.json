@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "customizations",
+  "info": {
+    "singularName": "customization",
+    "pluralName": "customizations",
+    "displayName": "Customization",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "cost": {
+      "type": "decimal"
+    },
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "customizations"
+    },
+    "order_item": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::order-item.order-item",
+      "inversedBy": "customization"
+    }
+  }
+}

@@ -16,14 +16,15 @@
       "type": "string",
       "required": true
     },
-    "product": {
+    "products": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::product.product",
       "inversedBy": "colors"
     },
     "hex": {
-      "type": "string"
+      "type": "string",
+      "regex": "^[0-9A-Fa-f]{6}$"
     },
     "order_items": {
       "type": "relation",

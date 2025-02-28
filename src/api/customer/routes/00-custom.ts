@@ -8,7 +8,7 @@ export default {
     {
       method: 'POST',
       path: '/customers/motoboy-shipping-rate',
-      handler: 'customer.motoboyShippingRate',
+      handler: 'customer.motoboyShippingRateWithPostGis',
     }
   ],
 }

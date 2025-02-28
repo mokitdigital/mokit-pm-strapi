@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "deliveries",
+  "info": {
+    "singularName": "delivery",
+    "pluralName": "deliveries",
+    "displayName": "Delivery",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "distance": {
+      "type": "float"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "sellers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::seller.seller"
+    },
+    "min": {
+      "type": "integer"
+    },
+    "max": {
+      "type": "integer"
+    }
+  }
+}

@@ -6,6 +6,42 @@ import { factories } from '@strapi/strapi'
 import { calculateDistance } from '../utils/calculate-distance';
 import { melhorEnvio } from '../../../service/melhor-envio';
 
+async function getCoordinates(address: string, retries = 5, delay = 100) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Erro HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.length === 0) {
+        throw new Error("Endereço não encontrado.");
+      }
+
+      return {
+        latitude: data[0].lat,
+        longitude: data[0].lon
+      };
+    } catch (error) {
+      console.error(`Tentativa ${attempt} falhou: ${error.message}`);
+
+      if (attempt < retries) {
+        const waitTime = Math.pow(2, attempt) * delay; // 200ms, 400ms, 800ms...
+        console.log(`Aguardando ${waitTime}ms antes de tentar novamente...`);
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+      } else {
+        console.error("Número máximo de tentativas atingido.");
+        throw error;
+      }
+    }
+  }
+}
+
 export default factories.createCoreController('api::customer.customer', ({ strapi }) => ({
   async shippingRates(ctx) {
     const { sellerId, zipCode, products } = ctx.request.body;
@@ -70,7 +106,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
     const seller = await strapi.entityService.findOne('api::seller.seller', sellerId);
 
     if (!seller) {
-      return ctx.notFound('Seller not found.');
+      return ctx.badRequest('Seller not found.');
     }
 
     try {
@@ -81,7 +117,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       const originData = await originResponse.json();
       console.log("Origin Data:", originData);
       if (!originData.results || originData.results.length === 0) {
-        return ctx.notFound('Origin not found.');
+        return ctx.badRequest('Origin not found.' + originData);
       }
       const originLocation = originData.results[0].geometry.location;
       const destinationResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
@@ -112,18 +148,28 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         destinationLocation.lng
       );
 
-      if (distance <= 5) {
+      const delivery = await strapi.entityService.findMany('api::delivery.delivery', {
+        filters: { 
+          sellers: {
+            id: {
+              $contains: sellerId
+            }
+          }
+        }
+      });
+
+      if (distance <= delivery[0].distance) {
         ctx.body = [{
           id: 1,
           available: true,
           name: "Motoboy",
-          price: 15.0,
-          custom_price: 15.0,
+          price: delivery[0].price,
+          custom_price: delivery[0].price,
           currency: "R$",
           delivery_time: 6,
           delivery_range: {
-            min: 1,
-            max: 3
+            min: delivery[0].min,
+            max: delivery[0].max
           },
           company: {
             id: 1,
@@ -140,5 +186,57 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       strapi.log.error('Error calculating distance', error);
       ctx.throw(500, 'Failed to calculate shipping distance.');
     }
+  },
+  async motoboyShippingRateWithPostGis(ctx) {
+    const { sellerId, zipCode } = ctx.request.body;
+
+    const coordinates = await getCoordinates(zipCode)
+
+    if (!sellerId || !zipCode) {
+      return ctx.badRequest('Missing required fields.');
+    }
+
+    const seller = await strapi.entityService.findOne('api::seller.seller', sellerId, {
+      fields: ['latitude', 'longitude', 'zipCode']
+    });
+
+    if (!seller || !seller.latitude || !seller.longitude) {
+      return ctx.badRequest('Seller not found or missing coordinates.');
+    }
+
+    if (!coordinates) {
+      return ctx.notFound('Destination not found.');
+    }
+
+    const { latitude: destLat, longitude: destLon } = coordinates;
+
+    const distance = calculateDistance(seller.latitude, seller.longitude, destLat, destLon);
+
+    console.log("Distance:", distance);
+
+    if (distance <= 5) {
+      ctx.body = [{
+        id: 1,
+        available: true,
+        name: "Motoboy",
+        price: 15.0,
+        custom_price: 15.0,
+        currency: "R$",
+        delivery_time: 6,
+        delivery_range: {
+          min: 1,
+          max: 3
+        },
+        company: {
+          id: 1,
+          name: "Motoboy",
+          picture: ""
+        }
+      }];
+    } else {
+      ctx.body = [{ message: 'Nenhum motoboy disponível para este endereço.', distance, available: false }];
+    }
+
+    ctx.status = 200;
   }
 }));

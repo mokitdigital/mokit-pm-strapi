@@ -10,4 +10,7 @@ export default ({ env }) => ({
       importSensitiveData: false,
     },
   },
+  'content-type-builder': {
+    enabled: true,
+  },
 });

@@ -943,6 +943,7 @@ export interface ApiCouponCoupon extends Schema.CollectionType {
       'manyToMany',
       'api::customer.customer'
     >;
+    type: Attribute.Enumeration<['fixed', 'percentage']> & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1053,6 +1054,44 @@ export interface ApiCustomizationCustomization extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::customization.customization',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiDeliveryDelivery extends Schema.CollectionType {
+  collectionName: 'deliveries';
+  info: {
+    singularName: 'delivery';
+    pluralName: 'deliveries';
+    displayName: 'Delivery';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    distance: Attribute.Float;
+    price: Attribute.Decimal;
+    sellers: Attribute.Relation<
+      'api::delivery.delivery',
+      'oneToMany',
+      'api::seller.seller'
+    >;
+    min: Attribute.Integer;
+    max: Attribute.Integer;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::delivery.delivery',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::delivery.delivery',
       'oneToOne',
       'admin::user'
     > &
@@ -1512,6 +1551,7 @@ declare module '@strapi/types' {
       'api::coupon.coupon': ApiCouponCoupon;
       'api::customer.customer': ApiCustomerCustomer;
       'api::customization.customization': ApiCustomizationCustomization;
+      'api::delivery.delivery': ApiDeliveryDelivery;
       'api::image.image': ApiImageImage;
       'api::order.order': ApiOrderOrder;
       'api::order-item.order-item': ApiOrderItemOrderItem;

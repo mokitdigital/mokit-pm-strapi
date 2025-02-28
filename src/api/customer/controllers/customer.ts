@@ -148,18 +148,28 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         destinationLocation.lng
       );
 
-      if (distance <= 5) {
+      const delivery = await strapi.entityService.findMany('api::delivery.delivery', {
+        filters: { 
+          sellers: {
+            id: {
+              $contains: sellerId
+            }
+          }
+        }
+      });
+
+      if (distance <= delivery[0].distance) {
         ctx.body = [{
           id: 1,
           available: true,
           name: "Motoboy",
-          price: 15.0,
-          custom_price: 15.0,
+          price: delivery[0].price,
+          custom_price: delivery[0].price,
           currency: "R$",
           delivery_time: 6,
           delivery_range: {
-            min: 1,
-            max: 3
+            min: delivery[0].min,
+            max: delivery[0].max
           },
           company: {
             id: 1,

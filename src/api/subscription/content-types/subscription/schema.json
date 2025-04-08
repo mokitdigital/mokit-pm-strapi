@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "subscriptions",
+  "info": {
+    "singularName": "subscription",
+    "pluralName": "subscriptions",
+    "displayName": "Subscription"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "seller": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "subscription"
+    },
+    "payload": {
+      "type": "json"
+    }
+  }
+}

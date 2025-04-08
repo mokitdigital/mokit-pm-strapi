@@ -1133,6 +1133,43 @@ export interface ApiImageImage extends Schema.CollectionType {
   };
 }
 
+export interface ApiNotificationNotification extends Schema.CollectionType {
+  collectionName: 'notifications';
+  info: {
+    singularName: 'notification';
+    pluralName: 'notifications';
+    displayName: 'Notification';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    seller: Attribute.Relation<
+      'api::notification.notification',
+      'manyToOne',
+      'api::seller.seller'
+    >;
+    title: Attribute.String;
+    body: Attribute.Text;
+    viewed: Attribute.Boolean;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiOrderOrder extends Schema.CollectionType {
   collectionName: 'orders';
   info: {
@@ -1404,6 +1441,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToMany',
       'api::color.color'
     >;
+    featured: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1473,6 +1511,16 @@ export interface ApiSellerSeller extends Schema.CollectionType {
     longitude: Attribute.Float;
     pixKey: Attribute.String;
     pixInformation: Attribute.Text;
+    notifications: Attribute.Relation<
+      'api::seller.seller',
+      'oneToMany',
+      'api::notification.notification'
+    >;
+    subscription: Attribute.Relation<
+      'api::seller.seller',
+      'oneToOne',
+      'api::subscription.subscription'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1527,6 +1575,40 @@ export interface ApiSizeSize extends Schema.CollectionType {
   };
 }
 
+export interface ApiSubscriptionSubscription extends Schema.CollectionType {
+  collectionName: 'subscriptions';
+  info: {
+    singularName: 'subscription';
+    pluralName: 'subscriptions';
+    displayName: 'Subscription';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    seller: Attribute.Relation<
+      'api::subscription.subscription',
+      'oneToOne',
+      'api::seller.seller'
+    >;
+    payload: Attribute.JSON;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::subscription.subscription',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::subscription.subscription',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1553,12 +1635,14 @@ declare module '@strapi/types' {
       'api::customization.customization': ApiCustomizationCustomization;
       'api::delivery.delivery': ApiDeliveryDelivery;
       'api::image.image': ApiImageImage;
+      'api::notification.notification': ApiNotificationNotification;
       'api::order.order': ApiOrderOrder;
       'api::order-item.order-item': ApiOrderItemOrderItem;
       'api::payment.payment': ApiPaymentPayment;
       'api::product.product': ApiProductProduct;
       'api::seller.seller': ApiSellerSeller;
       'api::size.size': ApiSizeSize;
+      'api::subscription.subscription': ApiSubscriptionSubscription;
     }
   }
 }

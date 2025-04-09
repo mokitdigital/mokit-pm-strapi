@@ -126,6 +126,10 @@
       "relation": "manyToMany",
       "target": "api::color.color",
       "mappedBy": "products"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

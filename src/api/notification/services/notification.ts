@@ -1,8 +1,11 @@
-// src/api/notification/services/notification.ts
+/**
+ * order service
+ */
 
-const webPush = require("web-push");
+import { factories } from '@strapi/strapi';
+import webPush from "web-push";
 
-export default {
+export default factories.createCoreService('api::order.order', ({ strapi }) => ({
   async notifyAll({ sellerId, title, body }) {
     webPush.setVapidDetails(
       process.env.VAPID_EMAIL,
@@ -24,11 +27,11 @@ export default {
     const payload = JSON.stringify({ title, body });
 
     await Promise.all(
-      subscriptions.map((sub) =>
-        webPush.sendNotification(sub.payload, payload).catch((err) => {
+      subscriptions.map((sub) => {
+        return webPush.sendNotification(sub.payload as any, payload).catch((err) => {
           console.error("Erro ao enviar push", err);
-        })
-      )
+        });
+      })
     );
 
     await strapi.entityService.create("api::notification.notification", {
@@ -43,4 +46,4 @@ export default {
       message: "Notificações enviadas",
     };
   },
-};
+}));

@@ -92,7 +92,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       });
 
       await strapi.service("api::notification.notification").notifyAll({
-        sellerId: data.seller[0].id, // ou outro identificador
+        sellerId: data.seller[0].id,
         title: `Novo pedido de ${data.customer[0].name}`,
         body: `Pedido nº ${response.id} de ${data.customer[0].name}`,
       });

@@ -22,7 +22,7 @@ export default factories.createCoreController('api::seller.seller', ({ strapi })
     const user = await strapi.query('plugin::users-permissions.user').findOne({
       where: { email },
       populate: ['role'],
-    }) as any | null;
+    })
 
     if (!user) {
       return ctx.unauthorized('Invalid email or password.');
@@ -39,6 +39,8 @@ export default factories.createCoreController('api::seller.seller', ({ strapi })
 
     // Verificar a senha
     const validPassword = await strapi.plugins['users-permissions'].services.user.validatePassword(password, user.password);
+
+    console.log(validPassword, user, password);
 
     if (!validPassword) {
       return ctx.unauthorized('Invalid email or password.');

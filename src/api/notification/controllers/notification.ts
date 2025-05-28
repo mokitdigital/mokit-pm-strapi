@@ -28,8 +28,6 @@ export default factories.createCoreController(
         return ctx.notFound("Seller not found.");
       }
 
-      console.log("Subscription:", subscription);
-
       await strapi.entityService.create("api::subscription.subscription", {
         data: {
           seller: sellerId,
@@ -54,6 +52,31 @@ export default factories.createCoreController(
         ctx.badRequest(err.message);
       }
     },
+    async getNotifications(ctx) {
+      const { sellerId } = ctx.params;
+      const notifications = await strapi.entityService.findMany(
+        "api::notification.notification",
+        {
+          filters: { seller: sellerId },
+        }
+      );
 
+      ctx.send(notifications);
+    },
+    async markViewed(ctx) {
+      const { id } = ctx.params;
+
+      const notifications = await strapi.entityService.update(
+        "api::notification.notification",
+        id,
+        {
+          data: {
+            viewed: true,
+          },
+        }
+      );
+
+      ctx.send(notifications);
+    }
   })
 );

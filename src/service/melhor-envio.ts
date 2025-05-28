@@ -32,7 +32,7 @@ export const melhorEnvio = {
           receipt: false,
           own_hand: false
         },
-        services: "1,2"
+        services: "1,2,3,4"
       })
     });
 

@@ -57,7 +57,11 @@ export default factories.createCoreController(
       const notifications = await strapi.entityService.findMany(
         "api::notification.notification",
         {
-          filters: { seller: sellerId },
+          filters: { 
+            seller: sellerId,
+          },
+          limit: 10,
+          sort: ["createdAt:desc"]
         }
       );
 

@@ -1516,11 +1516,6 @@ export interface ApiSellerSeller extends Schema.CollectionType {
       'oneToMany',
       'api::notification.notification'
     >;
-    subscription: Attribute.Relation<
-      'api::seller.seller',
-      'oneToOne',
-      'api::subscription.subscription'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1581,6 +1576,7 @@ export interface ApiSubscriptionSubscription extends Schema.CollectionType {
     singularName: 'subscription';
     pluralName: 'subscriptions';
     displayName: 'Subscription';
+    description: '';
   };
   options: {
     draftAndPublish: false;

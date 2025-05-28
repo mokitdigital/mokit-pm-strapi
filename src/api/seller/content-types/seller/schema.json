@@ -88,12 +88,6 @@
       "relation": "oneToMany",
       "target": "api::notification.notification",
       "mappedBy": "seller"
-    },
-    "subscription": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::subscription.subscription",
-      "mappedBy": "seller"
     }
   }
 }

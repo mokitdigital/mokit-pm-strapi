@@ -4,7 +4,8 @@
   "info": {
     "singularName": "subscription",
     "pluralName": "subscriptions",
-    "displayName": "Subscription"
+    "displayName": "Subscription",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -14,8 +15,7 @@
     "seller": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::seller.seller",
-      "inversedBy": "subscription"
+      "target": "api::seller.seller"
     },
     "payload": {
       "type": "json"
